@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    container_name: vector_test
+    image: vitalyven/docker-postgresql-large-cube:13.1-alpine 
+    restart: always
+    environment:
+      - POSTGRES_USER=user_0
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_0
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 50M
+
+volumes:
+  db:
+    driver: local
