@@ -99,6 +99,26 @@ When performing search queries, the bottlenecks are CPU and storage I/O
     
 As you can see below from comparing 50M to 1G memory, search query times are similar.    
 The main difference I noticed is creating indeces takes much longer with 50M memory. 
+
+Summary Table:
+|   1 cpu core / 50M memory  | 10k    | 100k    | 1M       |   |
+|----------------------------|--------|---------|----------|---|
+| Creating Temp Table        | 1383ms | 19735ms | 264618ms |   |
+| Query 1 Point; No index    | 116ms  | 533ms   | 5925.5ms |   |
+| Query 1 point; With index  | 86ms   |         | 3215ms   |   |
+| Insert 1 point; No index   | 0.44ms |         | 2.3ms    |   |
+| Insert 1 point; With Index | 1.46ms |         | 9.8ms    |   |
+
+    
+
+|  1 cpu core /  1G memory   | 10k    | 100k    | 1M       |   |
+|----------------------------|--------|---------|----------|---|
+| Creating Temp Table        | 1149ms | 14241ms | 203225ms |   |
+| Query 1 Point; No index    | 102ms  | 347ms   | 4700ms   |   |
+| Query 1 point; With index  | 90ms   | 347ms   | 3299ms   |   |
+| Insert 1 point; No index   | 0.5ms  | 0.4ms   | 1.9ms    |   |
+| Insert 1 point; With Index | 1.1ms  | 0.8ms   | 6.4ms    |   |
+
 1. ThinkPad X260 - Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz
     - 1 cpu core
     - 50M memory
@@ -127,7 +147,7 @@ The main difference I noticed is creating indeces takes much longer with 50M mem
     - 1G memory
     - 120 dimension vectors
         1. 10k rows
-            - Creating temp table and inserting 10k rows: 1383ms
+            - Creating temp table and inserting 10k rows: 1149ms
             - Querying 1 point
                 - No index: 72ms to 132ms - Avg. 102ms
                 - With index: 53ms to 127ms -  Avg. 90ms
