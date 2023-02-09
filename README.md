@@ -2,7 +2,7 @@
 The default Postgresql package comes with cube, but limited to 100 dimensions.    
 In order to increase the limit, we need to edit cubedata.h and recompile.    
 Instruction on how to do that can be found here: https://stackoverflow.com/questions/53958843/there-is-no-cubedata-h-and-contrib-directory-in-postgresql    
-To save us the trouble, we use docker-compose as detailed in the next section.
+To save us the trouble, we instead use docker-compose as detailed in the next section.
 1. Install postgres and start postgres server    
     - Linux    
     `sudo systemctl start postgres`
@@ -34,7 +34,7 @@ Note that random() returns a number between 0 and 1
     ```
     CREATE TEMP TABLE space_nd AS
       SELECT i, cube(array_agg(random()::float)) AS c
-      FROM generate_series(1,1e6) AS i
+      FROM generate_series(1,1e4) AS i
       CROSS JOIN LATERAL generate_series(1,120)
         AS x
       GROUP BY i; 
@@ -76,11 +76,14 @@ CREATE INDEX ON space_nd USING gist ( c );
 
 # Running and benchmarking parallel queries
 We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
+     
+# Precision 
+Since cube extension stores values internally as 64-bit floating point numbers, i think it is unlikely that reducing the input vector values will result in performance increases. 
 
 # Benchmarks
 For local testing, in our docker-compose file we limit our container to 1 cpu core
 A basic managed database instance on DigitalOcean is 1GB RAM / 1vCPU / 10 GB disk    
-Using 1 core on my Thinkpad should be comparable to 1vCPU, albeit 1vCPU on their hardware will be more powerful    
+Using 1 core on my Thinkpad should be somewhat comparable to 1vCPU, albeit 1vCPU on their hardware will be more powerful    
     
 Note that postgres does do some optimizing after running the same query multiple times, so query times may improve after the first query (sometimes significantly)    
     
@@ -144,4 +147,4 @@ The main difference I noticed is creating indeces takes much longer with 50M mem
                 
 
     
-    Conclusion: Search Queries are reasonably fast, but inserting large amonuts of data and creating indexes takes much longer.
+    Conclusion: Search Queries are reasonably fast, but inserting large amounts of data and creating indexes takes much longer.
