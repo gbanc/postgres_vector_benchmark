@@ -101,7 +101,7 @@ As you can see below from comparing 50M to 1G memory, search query times are sim
 The main difference I noticed is creating indeces takes much longer with 50M memory. 
 
 Summary Table:
-|   1 cpu core / 50M memory  | 10k    | 100k    | 1M       |
+|   1 cpu core / 50M memory / 120 dimensions  | 10k    | 100k    | 1M       |
 |----------------------------|--------|---------|----------|
 | Creating Temp Table and Insert       | 1383 ms | 19735 ms | 264618 ms |
 | Query 1 Point; No index    | 116 ms  | 533 ms   | 5925.5 ms |
@@ -111,7 +111,7 @@ Summary Table:
 
     
 
-|  1 cpu core /  1G memory   | 10k    | 100k    | 1M       |
+|  1 cpu core /  1G memory  / 120 dimensions | 10k    | 100k    | 1M       |
 |----------------------------|--------|---------|----------|
 | Creating Temp Table and Insert        | 1149 ms | 14241 ms | 203225 ms |
 | Query 1 Point; No index    | 102 ms  | 347 ms   | 4700 ms   |
