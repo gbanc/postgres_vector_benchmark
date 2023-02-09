@@ -41,7 +41,7 @@ Note that random() returns a number between 0 and 1
     ```
     CREATE TEMP TABLE space_nd AS
       SELECT i, cube(array_agg(random()::float)) AS c
-      FROM generate_series(1,1e4) AS i
+      FROM generate_series(1,1e5) AS i
       CROSS JOIN LATERAL generate_series(1,120)
         AS x
       GROUP BY i; 
@@ -72,7 +72,9 @@ CREATE INDEX ON space_nd USING gist ( c );
 1. Create table    
 ``` CREATE TABLE vector_table (id serial PRIMARY KEY, vector cube) ```
 2. Insert one random 120d array    
-``` INSERT INTO vector_table (vector) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120) ```
+``` 
+INSERT INTO space_nd (c) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120)
+ ```
 3. Search for nearby points where distance is less than .3
     ``` 
     SELECT id, cube_distance(vector_table.vector, {search_vector}) 
@@ -105,9 +107,9 @@ Summary Table:
 |----------------------------|--------|---------|----------|
 | Creating Temp Table        | 1383 ms | 19735 ms | 264618 ms |
 | Query 1 Point; No index    | 116 ms  | 533 ms   | 5925.5 ms |
-| Query 1 point; With index  | 86 ms   |         | 3215 ms   |
-| Insert 1 point; No index   | 0.4 ms |         | 2.3 ms    |
-| Insert 1 point; With Index | 1.5 ms |         | 9.8 ms    |
+| Query 1 point; With index  | 86 ms   |    483.3     | 3215 ms   |
+| Insert 1 point; No index   | 0.4 ms |   4.3ms      | 2.3 ms    |
+| Insert 1 point; With Index | 1.5 ms |   5.1ms      | 9.8 ms    |
 
     
 
@@ -135,6 +137,10 @@ Summary Table:
             - Creating temp table and inserting 100k rows: 19735ms
             - Querying 1 point
                 - No index: 533ms 
+                - With index: 330ms to 636.550ms - Avg. 483.3ms
+            - Insert 1 point
+                - No Index: 0.235ms to 8.350ms - Avg. 4.293ms
+                - With Index: 0.644ms to 9.485ms -  Avg. 5.065ms
         3. 1M rows
             - Creating temp table and inserting 1M rows: 264618ms
             - Querying 1 point

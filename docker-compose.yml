@@ -16,7 +16,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 1G
+          memory: 50M
 
 volumes:
   db:
