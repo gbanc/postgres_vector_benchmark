@@ -27,6 +27,13 @@ To save us the trouble, we instead use docker-compose as detailed in the next se
 5. Create cube extension    
     ``` CREATE EXTENSION cube; ```
 
+# DigitalOcean Managed Database
+### Again, the cube extension will be limited to 100 dimensions.
+https://docs.digitalocean.com/products/databases/postgresql/how-to/connect/
+1. Follow the instructions to connect to your database using psql.
+2. Create cube extension    
+    ``` CREATE EXTENSION cube; ```
+
 # Creating a temp table with data and running queries
 ### Note that by default cube is limited to 100 dimensions.
 1. Create a temporary table, and generate 10k (1e4) vectors with 120 dimensions to insert:
