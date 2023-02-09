@@ -88,7 +88,7 @@ We can orchestrate parallel requests using python multithreading to perform mult
 Since cube extension stores values internally as 64-bit floating point numbers, i think it is unlikely that reducing the input vector values will result in performance increases. 
 
 # Benchmarks
-For local testing, in our docker-compose file we limit our container to 1 cpu core
+For local testing, in our docker-compose file we limit our container to 1 cpu core    
 A basic managed database instance on DigitalOcean is 1GB RAM / 1vCPU / 10 GB disk    
 Using 1 core on my Thinkpad should be somewhat comparable to 1vCPU, albeit 1vCPU on their hardware will be more powerful    
     
