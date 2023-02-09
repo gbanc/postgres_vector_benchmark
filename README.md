@@ -103,21 +103,21 @@ The main difference I noticed is creating indeces takes much longer with 50M mem
 Summary Table:
 |   1 cpu core / 50M memory  | 10k    | 100k    | 1M       |   |
 |----------------------------|--------|---------|----------|---|
-| Creating Temp Table        | 1383ms | 19735ms | 264618ms |   |
-| Query 1 Point; No index    | 116ms  | 533ms   | 5925.5ms |   |
-| Query 1 point; With index  | 86ms   |         | 3215ms   |   |
-| Insert 1 point; No index   | 0.44ms |         | 2.3ms    |   |
-| Insert 1 point; With Index | 1.46ms |         | 9.8ms    |   |
+| Creating Temp Table        | 1383 ms | 19735 ms | 264618 ms |   |
+| Query 1 Point; No index    | 116 ms  | 533 ms   | 5925.5 ms |   |
+| Query 1 point; With index  | 86 ms   |         | 3215 ms   |   |
+| Insert 1 point; No index   | 0.4 ms |         | 2.3 ms    |   |
+| Insert 1 point; With Index | 1.5 ms |         | 9.8 ms    |   |
 
     
 
 |  1 cpu core /  1G memory   | 10k    | 100k    | 1M       |   |
 |----------------------------|--------|---------|----------|---|
-| Creating Temp Table        | 1149ms | 14241ms | 203225ms |   |
-| Query 1 Point; No index    | 102ms  | 347ms   | 4700ms   |   |
-| Query 1 point; With index  | 90ms   | 347ms   | 3299ms   |   |
-| Insert 1 point; No index   | 0.5ms  | 0.4ms   | 1.9ms    |   |
-| Insert 1 point; With Index | 1.1ms  | 0.8ms   | 6.4ms    |   |
+| Creating Temp Table        | 1149 ms | 14241 ms | 203225 ms |   |
+| Query 1 Point; No index    | 102 ms  | 347 ms   | 4700 ms   |   |
+| Query 1 point; With index  | 90 ms   | 347 ms   | 3299 ms   |   |
+| Insert 1 point; No index   | 0.5 ms  | 0.4 ms   | 1.9 ms    |   |
+| Insert 1 point; With Index | 1.1 ms  | 0.8 ms   | 6.4 ms    |   |
 
 1. ThinkPad X260 - Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz
     - 1 cpu core
