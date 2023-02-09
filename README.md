@@ -5,7 +5,7 @@ Instruction on how to do that can be found here: https://stackoverflow.com/quest
 To save us the trouble, we instead use docker-compose as detailed in the next section.
 1. Install postgres and start postgres server    
     - Linux    
-    `sudo systemctl start postgres`
+    `sudo systemctl start postgresql`
 2. Connect to your local postgres instance    
 ``` psql -U postgres -h 127.0.0.1 postgres --password ```
 3. Create a database    
