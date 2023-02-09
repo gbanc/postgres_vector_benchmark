@@ -65,26 +65,30 @@ CREATE INDEX ON space_nd USING gist ( c );
 1. Create table    
 ``` CREATE TABLE vector_table (id serial PRIMARY KEY, vector cube) ```
 2. Insert one random 120d array    
-``` 
-INSERT INTO space_nd (c) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120) 
-```
+``` INSERT INTO vector_table (vector) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120) ```
 3. Search for nearby points where distance is less than .3
-``` 
-SELECT id, cube_distance(vector_table.vector, {search_vector}) 
-WHERE cube_distance(vector_table.vector, {search_vector}) < .3
-ORDER BY space_nd.c <-> {search_vector}
-LIMIT 5;
-```
+    ``` 
+    SELECT id, cube_distance(vector_table.vector, {search_vector}) 
+    WHERE cube_distance(vector_table.vector, {search_vector}) < .3
+    ORDER BY space_nd.c <-> {search_vector}
+    LIMIT 5;
+    ```
 
 # Running and benchmarking parallel queries
-We can orchestrate parallel requests using python multithreading
+We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
 
 # Benchmarks
-For local testing, in our docker-compose file we limit our container to 1 cpu core and 50M memory    
-Note that postgres does do some optimizing after running the same query multiple times, so query times may improve after the first query .(sometimes significantly)    
+For local testing, in our docker-compose file we limit our container to 1 cpu core
+A basic managed database instance on DigitalOcean is 1GB RAM / 1vCPU / 10 GB disk    
+Using 1 core on my Thinkpad should be comparable to 1vCPU, albeit 1vCPU on their hardware will be more powerful    
+    
+Note that postgres does do some optimizing after running the same query multiple times, so query times may improve after the first query (sometimes significantly)    
+    
 The bottleneck for inserting data and creating indexes is usually RAM.    
-When performing search queries, the bottlenecks are CPU and storage I/O
-As you can see below from comparing 50M to 1G memory, 
+When performing search queries, the bottlenecks are CPU and storage I/O    
+    
+As you can see below from comparing 50M to 1G memory, search query times are similar.    
+The main difference I noticed is creating indeces takes much longer with 50M memory. 
 1. ThinkPad X260 - Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz
     - 1 cpu core
     - 50M memory
@@ -105,9 +109,10 @@ As you can see below from comparing 50M to 1G memory,
             - Creating temp table and inserting 1M rows: 264618ms
             - Querying 1 point
                 - No index: 4000ms to 7851ms - Avg. 5925.5ms
+                - With index: 3063ms to 3367ms - Avg. 3215ms
             - Insert 1 point
                 - No Index: 0.509ms to 4.030ms - Avg. 2.27ms
-                - With Index:  - Avg. ms
+                - With Index: 4.102ms to 15.635ms - Avg. 9.869 ms
     - 1 cpu core
     - 1G memory
     - 120 dimension vectors
