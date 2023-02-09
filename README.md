@@ -41,7 +41,7 @@ Note that random() returns a number between 0 and 1
     ```
     CREATE TEMP TABLE space_nd AS
       SELECT i, cube(array_agg(random()::float)) AS c
-      FROM generate_series(1,1e5) AS i
+      FROM generate_series(1,1e4) AS i
       CROSS JOIN LATERAL generate_series(1,120)
         AS x
       GROUP BY i; 
@@ -72,9 +72,7 @@ CREATE INDEX ON space_nd USING gist ( c );
 1. Create table    
 ``` CREATE TABLE vector_table (id serial PRIMARY KEY, vector cube) ```
 2. Insert one random 120d array    
-``` 
-INSERT INTO space_nd (c) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120)
- ```
+``` INSERT INTO vector_table (vector) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120) ```
 3. Search for nearby points where distance is less than .3
     ``` 
     SELECT id, cube_distance(vector_table.vector, {search_vector}) 
@@ -105,7 +103,7 @@ The main difference I noticed is creating indeces takes much longer with 50M mem
 Summary Table:
 |   1 cpu core / 50M memory  | 10k    | 100k    | 1M       |
 |----------------------------|--------|---------|----------|
-| Creating Temp Table        | 1383 ms | 19735 ms | 264618 ms |
+| Creating Temp Table and Insert       | 1383 ms | 19735 ms | 264618 ms |
 | Query 1 Point; No index    | 116 ms  | 533 ms   | 5925.5 ms |
 | Query 1 point; With index  | 86 ms   |    483.3     | 3215 ms   |
 | Insert 1 point; No index   | 0.4 ms |   4.3ms      | 2.3 ms    |
@@ -115,7 +113,7 @@ Summary Table:
 
 |  1 cpu core /  1G memory   | 10k    | 100k    | 1M       |
 |----------------------------|--------|---------|----------|
-| Creating Temp Table        | 1149 ms | 14241 ms | 203225 ms |
+| Creating Temp Table and Insert        | 1149 ms | 14241 ms | 203225 ms |
 | Query 1 Point; No index    | 102 ms  | 347 ms   | 4700 ms   |
 | Query 1 point; With index  | 90 ms   | 319 ms   | 3299 ms   |
 | Insert 1 point; No index   | 0.5 ms  | 0.4 ms   | 1.9 ms    |
