@@ -75,9 +75,9 @@ CREATE INDEX ON space_nd USING gist ( c );
 ``` INSERT INTO vector_table (vector) SELECT cube(array_agg(random()::float)) FROM generate_series(1,120) ```
 3. Search for nearby points where distance is less than .3
     ``` 
-    SELECT id, cube_distance(vector_table.vector, cube({search_vector})) 
-    WHERE cube_distance(vector_table.vector, cube({search_vector})) < .3
-    ORDER BY vector_table.vector <-> cube({search_vector})
+    SELECT id, cube_distance(vector_table.vector, cube(ARRAY[{search_vector}])) 
+    WHERE cube_distance(vector_table.vector, cube(ARRAY[{search_vector}])) < .3
+    ORDER BY vector_table.vector <-> cube(ARRAY[{search_vector}])
     LIMIT 5;
     ```
 
