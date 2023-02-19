@@ -15,6 +15,9 @@ def db_conn():
     yield conn
     conn.close()
 
+def lst2pgarr(alist):
+    return ','.join(map(str, alist))
+
 @pytest.fixture(scope="session")
 def remaining_data(db_conn):
     # Load the remaining rows CSV file into a pandas DataFrame
@@ -24,11 +27,12 @@ def remaining_data(db_conn):
     cur = db_conn.cursor()
 
     # Create a new table to store the remaining data
-    cur.execute("CREATE TABLE vector_test (id SERIAL, vector cube, column3 TEXT)")
+    cur.execute("CREATE TABLE vector_test (id SERIAL, vector cube)")
 
     # Insert the remaining data into the table
+    # We have create the sql inline, parameters dont pass the array correctly
     for row in df.itertuples(index=False):
-        cur.execute("INSERT INTO vector_test (vector) VALUES (%s)", row)
+        cur.execute("INSERT INTO vector_test (vector) VALUES (cube(ARRAY[%s]))" % lst2pgarr(row))
 
     # Commit the changes to the database
     db_conn.commit()
@@ -41,9 +45,9 @@ def remaining_data(db_conn):
 def test_query_performance(remaining_data):
     # Connect to the PostgreSQL database
     conn = psycopg2.connect(
-        dbname="mydatabase",
-        user="myuser",
-        password="mypassword",
+        dbname="postgres",
+        user="postgres",
+        password="password",
         host="localhost",
         port="5432"
     )
