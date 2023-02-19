@@ -41,7 +41,7 @@ Note that random() returns a number between 0 and 1
     ```
     CREATE TEMP TABLE space_nd AS
       SELECT i, cube(array_agg(random()::float)) AS c
-      FROM generate_series(1,1e4) AS i
+      FROM generate_series(1,1e6) AS i
       CROSS JOIN LATERAL generate_series(1,120)
         AS x
       GROUP BY i; 
@@ -67,7 +67,7 @@ Note that random() returns a number between 0 and 1
 ``` 
 CREATE INDEX ON space_nd USING gist ( c );
 ```
-
+ 0.9029876413231861
 # Creating a regular table, inserting, and querying data
 1. Create table    
 ``` CREATE TABLE vector_table (id serial PRIMARY KEY, vector cube) ```
@@ -77,7 +77,7 @@ CREATE INDEX ON space_nd USING gist ( c );
     ``` 
     SELECT id, cube_distance(vector_table.vector, {search_vector}) 
     WHERE cube_distance(vector_table.vector, {search_vector}) < .3
-    ORDER BY space_nd.c <-> {search_vector}
+    ORDER BY vector_table.c <-> {search_vector}
     LIMIT 5;
     ```
 

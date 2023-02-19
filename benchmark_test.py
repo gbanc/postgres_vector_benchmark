@@ -1,63 +1,36 @@
 import pytest
 import psycopg2
+import psycopg2.extras
 from timeit import default_timer as timer
 import pandas as pd
+import random
+from conftest import lst2pgarr
 
-@pytest.fixture(scope="session")
-def db_conn():
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="password",
-        host="localhost",
-        port="5432"
-    )
-    yield conn
-    conn.close()
-
-def lst2pgarr(alist):
-    return ','.join(map(str, alist))
-
-@pytest.fixture(scope="session")
-def remaining_data(db_conn):
-    # Load the remaining rows CSV file into a pandas DataFrame
-    df = pd.read_csv("test_data/remaining_rows.csv", header=None)
-
+def test_query_performance(postgresql):
     # Open a cursor to perform database operations
-    cur = db_conn.cursor()
+    cur = postgresql.cursor()
 
-    # Create a new table to store the remaining data
-    cur.execute("CREATE TABLE vector_test (id SERIAL, vector cube)")
-
-    # Insert the remaining data into the table
-    # We have create the sql inline, parameters dont pass the array correctly
-    for row in df.itertuples(index=False):
-        cur.execute("INSERT INTO vector_test (vector) VALUES (cube(ARRAY[%s]))" % lst2pgarr(row))
-
-    # Commit the changes to the database
-    db_conn.commit()
-
-    # Close the cursor
-    cur.close()
-
-    return df
-
-def test_query_performance(remaining_data):
-    # Connect to the PostgreSQL database
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="password",
-        host="localhost",
-        port="5432"
-    )
-
-    # Open a cursor to perform database operations
-    cur = conn.cursor()
-
+    # Load the test rows CSV file into a pandas DataFrame
+    df = pd.read_csv("test_data/10k_rows.csv", header=None)
     # Execute a sample query and measure its execution time
     start_time = timer()
-    cur.execute("SELECT * FROM vector_test WHERE mycolumn = 'myvalue'")
+
+
+    # Generate a random sample from the 10k rows
+    sample_size = 1
+    random_indices = random.sample(range(len(df)), sample_size)
+    df_random = df.iloc[random_indices]
+    rows = []
+    for r in df_random.itertuples(index=False):
+        rows.append(lst2pgarr(r))
+    #cur.execute("SELECT * FROM benchmark_vector WHERE vector = ARRAY%s" % rows)
+    
+    cur.execute("SELECT id, cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) \
+        FROM benchmark_vector \
+        WHERE cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) < .3 \
+        ORDER BY benchmark_vector.vector <-> cube(ARRAY[%s]) \
+        LIMIT 5;" % (rows[0], rows[0], rows[0]))
+    
     end_time = timer()
     query_time = end_time - start_time
 
@@ -70,4 +43,3 @@ def test_query_performance(remaining_data):
 
     # Close the cursor and the connection
     cur.close()
-    conn.close()
