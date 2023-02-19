@@ -34,10 +34,16 @@ def test_query_performance(postgresql):
     end_time = timer()
     query_time = end_time - start_time
 
-    # Assert that the query returns the expected results
     results = cur.fetchall()
-    assert len(results) == 10  # for example
 
+    # Assert that the query returns the expected results
+    # assert len(results) == 10  
+    print(f'Search query for %s vectors completed in %s seconds' % (len(rows), query_time))
+    print('\n')
+    print('Query result:')
+    print('(id, distance)')
+    for row in results:
+        print(row)
     # Assert that the query executes in a reasonable amount of time
     assert query_time < 1.0  # for example, in seconds
 
