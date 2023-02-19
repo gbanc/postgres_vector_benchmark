@@ -1,0 +1,11 @@
+attrs==22.2.0
+exceptiongroup==1.1.0
+iniconfig==2.0.0
+more-itertools==9.0.0
+packaging==23.0
+pluggy==0.13.1
+py==1.11.0
+pyscopg2==66.0.2
+pytest==6.2.5
+toml==0.10.2
+tomli==2.0.1
