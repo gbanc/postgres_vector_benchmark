@@ -1,12 +1,12 @@
 import pytest
 import psycopg2
 import psycopg2.extras
-from timeit import default_timer as timer
 import pandas as pd
 import pytest
 from pytest_postgresql.janitor import DatabaseJanitor
 from pytest_postgresql import factories
 
+# format the list of floats into a string for sql query
 def lst2pgarr(alist):
     return ','.join(map(str, alist))
 
@@ -23,7 +23,8 @@ def load_database(**kwargs):
 
         # Insert the remaining data into the table
         # We have create the sql inline, parameters dont pass the array correctly
-        for row in df.head(3).itertuples(index=False):
+        df = df.fillna(0)
+        for row in df.itertuples(index=False):
             cur.execute("INSERT INTO benchmark_vector (vector) VALUES (cube(ARRAY[%s]))" % lst2pgarr(row))
         # sql = """
         #     INSERT INTO benchmark_vector (vector)
