@@ -1,10 +1,10 @@
 
 # Using Pytest For Benchmarking 
-We'll use pytest to run some benchmarks for use.     
+We'll use pytest to run some benchmarks for postgresql query times.     
 First, lets install our dependencies:    
 ``` pip install -r requirements.txt```
 
-Next, create a file called settings.py with the following:    
+Next, in our root dir create a file called settings.py with the following:    
 ```
 DATABASE_PARAMS = {
         'user':'postgres',
@@ -16,11 +16,11 @@ DATABASE_PARAMS = {
 ```    
 If you want to use digitalOcean, simply replace the values with the connection params for your do db.    
 
-Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.    
+Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.     
+This script will split our vector.csv into two files: 10k_rows.csv and remaining_rows.csv 
 
 Place a file called vectors_noheader.csv in the root dir, and then run:    
 ``` python -m split_csv.py ```    
-Which will create the files in test_data    
 
 After that, run     
 ```python DbHelper.py```   
