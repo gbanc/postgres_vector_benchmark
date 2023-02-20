@@ -82,7 +82,20 @@ CREATE INDEX ON space_nd USING gist ( c );
     ```
 
 # Running and benchmarking 
+Create a file called settings.py with the following:    
+```
+DATABASE_PARAMS = {
+        'user':'postgres',
+        'host':'127.0.0.1',
+        'port': 5432,
+        'dbname':"postgres",
+        'password':'password',
+}
+```    
+If you want to use digitalOcean, simply replace the values with the connection params for your do db.    
+
 Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.    
+
 Place vectors_noheader.csv in the root dir, and then run:    
 ``` python -m split_csv.py ```    
 Which will create the files in test_data    
@@ -98,6 +111,7 @@ If you want the tests to use a static table, run:
 ``` python DbHelper.py```    
 and comment out this line in conftest.py:    
 ``` load=[load_database]```    
+
 # Parallel queries
 We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
      
