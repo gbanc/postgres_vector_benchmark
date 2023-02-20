@@ -19,7 +19,7 @@ class DbHelper:
             # Load the remaining rows CSV file into a pandas DataFrame
             df = pd.read_csv("test_data/remaining_rows.csv", header=None)
 
-            cur.execute("CREATE EXTENSION cube;")
+            cur.execute("CREATE EXTENSION IF NOT EXISTS cube;")
             # Create a new table to store the remaining data
             cur.execute("CREATE TABLE benchmark_vector (id serial PRIMARY KEY, vector cube)")
 
@@ -28,6 +28,7 @@ class DbHelper:
             df = df.fillna(0)
             for row in df.itertuples(index=False):
                 cur.execute("INSERT INTO benchmark_vector (vector) VALUES (cube(ARRAY[%s]))" % lst2pgarr(row))
+                db_connection.commit()
 
             # sql = """
             #     INSERT INTO benchmark_vector (vector)
@@ -41,7 +42,7 @@ class DbHelper:
             # print(data_gen)
             # psycopg2.extras.execute_batch(cur, sql, ((1,3,4), (1,234,3)), page_size=1000)
 
-            db_connection.commit()
+            
 
 if __name__ == "__main__":
     helper = DbHelper()

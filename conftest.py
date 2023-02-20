@@ -10,7 +10,8 @@ from settings import DATABASE_PARAMS
 
 def load_database(**kwargs):
     db_connection: connection = psycopg2.connect(**kwargs)
-    DbHelper.create_and_load_test_table(db_connection)
+    helper = DbHelper()
+    helper.create_and_load_test_table(db_connection)
 
 @pytest.fixture
 def database(postgresql_proc):
