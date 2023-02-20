@@ -33,6 +33,7 @@ class DbHelper:
 
         def processChunk(df):
             # do some data munging to turn float arrays into postgres array strings
+            # combine the csv array columns into 'vector' column, use lst2pgarrexplicit to format the list into {} 
             rows = []
             for row in df.itertuples(index=False):
                 rows.append(row)
