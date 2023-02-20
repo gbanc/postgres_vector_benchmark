@@ -6,11 +6,14 @@ from DbHelper import lst2pgarr
 
 # Load the test rows CSV file into a pandas DataFrame
 df = pd.read_csv("test_data/10k_rows.csv", header=None)
+# number of vectors to search for
 sample_size = 1
 
+# create multiple sets params for vector search, this will spawn multiple tests
 number_of_tests = 4
 test_cases = []
 for i in range(number_of_tests):
+    # Generate a random sample from the 10k rows
     random_indices = random.sample(range(len(df)), sample_size)
     df_random = df.iloc[random_indices]
     test_cases.append(df_random)
@@ -25,7 +28,6 @@ def test_query_performance(postgresql, search_vectors):
     for row in results:
         print(row)
 
-    # Generate a random sample from the 10k rows
     rows = []
     for r in search_vectors.itertuples(index=False):
         rows.append(lst2pgarr(r))
