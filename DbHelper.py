@@ -51,7 +51,7 @@ class DbHelper:
                     processChunk(chunk)
                     db_connection.commit()
             
-            # select insert from csv_vectors to cube column 
+            # select insert from csv_vectors vector column to benchmark_vectors cube column 
             cur.execute("CREATE TABLE IF NOT EXISTS benchmark_vectors (id serial PRIMARY KEY, vector cube)")
             cur.execute("INSERT INTO benchmark_vectors (vector) SELECT cube(vector) FROM csv_vectors")
             cur.close()

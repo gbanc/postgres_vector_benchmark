@@ -19,6 +19,11 @@ for i in range(number_of_tests):
 def test_query_performance(postgresql, search_vectors):
     # Open a cursor to perform database operations
     cur = postgresql.cursor()
+    cur.execute('SELECT COUNT(*) FROM benchmark_vector')
+    results = cur.fetchall()
+    print('Count of vector rows')
+    for row in results:
+        print(row)
 
     # Generate a random sample from the 10k rows
     rows = []
