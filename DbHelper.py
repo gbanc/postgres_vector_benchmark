@@ -19,7 +19,6 @@ class DbHelper:
         conn = psycopg2.connect(**DATABASE_PARAMS)
         self.create_and_load_test_table(conn)
 
-
     def create_and_load_test_table(self, db_connection):
 
         def insert_with_string_io(df: pd.DataFrame, table_name: str):
@@ -54,6 +53,7 @@ class DbHelper:
             # select insert from csv_vectors vector column to benchmark_vectors cube column 
             cur.execute("CREATE TABLE IF NOT EXISTS benchmark_vectors (id serial PRIMARY KEY, vector cube)")
             cur.execute("INSERT INTO benchmark_vectors (vector) SELECT cube(vector) FROM csv_vectors")
+            db_connection.commit()
             cur.close()
 
 if __name__ == "__main__":

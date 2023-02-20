@@ -22,9 +22,16 @@ def database(postgresql_proc):
     janitor.drop()
     
 postgresql_proc = factories.postgresql_proc(
-    #load=[load_database],
+    # load=[load_database],
 )
 
-postgresql = factories.postgresql(
-    "postgresql_proc",
-)
+# postgresql = factories.postgresql(
+#     "postgresql_proc",
+# )
+
+# comment this out if you use the above
+@pytest.fixture(scope="session")
+def postgresql():
+    conn = psycopg2.connect(**DATABASE_PARAMS)
+    yield conn
+    conn.close()

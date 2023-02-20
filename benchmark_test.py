@@ -19,7 +19,7 @@ for i in range(number_of_tests):
 def test_query_performance(postgresql, search_vectors):
     # Open a cursor to perform database operations
     cur = postgresql.cursor()
-    cur.execute('SELECT COUNT(*) FROM benchmark_vector')
+    cur.execute('SELECT COUNT(*) FROM benchmark_vectors')
     results = cur.fetchall()
     print('Count of vector rows')
     for row in results:
@@ -33,10 +33,10 @@ def test_query_performance(postgresql, search_vectors):
     # Execute a sample query and measure its execution time
     start_time = timer()
     # You can prepend with EXPLAIN ANALYZE for internal postgres execution time
-    cur.execute("EXPLAIN ANALYZE SELECT id, cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) \
-        FROM benchmark_vector \
-        WHERE cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) < .3 \
-        ORDER BY benchmark_vector.vector <-> cube(ARRAY[%s]) \
+    cur.execute("SELECT id, cube_distance(benchmark_vectors.vector, cube(ARRAY[%s])) \
+        FROM benchmark_vectors \
+        WHERE cube_distance(benchmark_vectors.vector, cube(ARRAY[%s])) < .3 \
+        ORDER BY benchmark_vectors.vector <-> cube(ARRAY[%s]) \
         LIMIT 5;" % (rows[0], rows[0], rows[0]))
     
     end_time = timer()

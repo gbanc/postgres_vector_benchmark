@@ -100,17 +100,26 @@ Place vectors_noheader.csv in the root dir, and then run:
 ``` python -m split_csv.py ```    
 Which will create the files in test_data    
 
-Using pytest we can run a simple benchmark. The fixtures will load the db with remaining_rows.csv    
+After that, run     
+```python DbHelper.py```   
+This will populate the database with data from the csv
+We populate the db tables once, so that tests dont have to load the csv into db every time the test suite is run.
+
+If you want to enable atomic database for testing then;
+
+Comment out these lines in conftest.py:    
+
+```
+# load=[load_database]
+
+# postgresql = factories.postgresql(
+#     "postgresql_proc",
+# )
+```
+
+Using pytest we can run the benchmarks   
 The unit test will load some vectors from 10k_rows.csv and use that to test the vector search query    
 ``` pytest -rP ```    
-
-For isolation, The tests will create and populate the table from csv each time tests are run,    
-And then the table will be dropped.    
-
-If you want the tests to use a static table, run:    
-``` python DbHelper.py```    
-and comment out this line in conftest.py:    
-``` load=[load_database]```    
 
 # Parallel queries
 We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
