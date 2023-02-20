@@ -2,8 +2,7 @@ from timeit import default_timer as timer
 import pandas as pd
 import pytest
 import random
-from conftest import lst2pgarr
-from datetime import datetime
+from DbHelper import lst2pgarr
 
 # Load the test rows CSV file into a pandas DataFrame
 df = pd.read_csv("test_data/10k_rows.csv", header=None)
@@ -29,7 +28,7 @@ def test_query_performance(postgresql, search_vectors):
     # Execute a sample query and measure its execution time
     start_time = timer()
     # You can prepend with EXPLAIN ANALYZE for internal postgres execution time
-    cur.execute("SELECT id, cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) \
+    cur.execute("EXPLAIN ANALYZE SELECT id, cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) \
         FROM benchmark_vector \
         WHERE cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) < .3 \
         ORDER BY benchmark_vector.vector <-> cube(ARRAY[%s]) \
