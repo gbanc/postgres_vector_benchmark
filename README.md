@@ -1,3 +1,64 @@
+
+# Using Pytest For Benchmarking 
+We'll use pytest to run some benchmarks for use.     
+First, lets install our dependencies:    
+``` pip install -r requirements.txt```
+
+Next, create a file called settings.py with the following:    
+```
+DATABASE_PARAMS = {
+        'user':'postgres',
+        'host':'127.0.0.1',
+        'port': 5432,
+        'dbname':"postgres",
+        'password':'password',
+}
+```    
+If you want to use digitalOcean, simply replace the values with the connection params for your do db.    
+
+Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.    
+
+Place a file called vectors_noheader.csv in the root dir, and then run:    
+``` python -m split_csv.py ```    
+Which will create the files in test_data    
+
+After that, run     
+```python DbHelper.py```   
+
+This will populate the database with data from the csv    
+We populate the db tables once, so that tests dont have to load the csv into db every time the test suite is run.
+
+If you want to enable atomic database for testing then;
+
+Comment out these lines in conftest.py:    
+
+```
+# load=[load_database]
+
+# postgresql = factories.postgresql(
+#     "postgresql_proc",
+# )
+```
+
+Using pytest we can run the benchmarks   
+The unit test will load some vectors from 10k_rows.csv and use that to test the vector search query    
+``` pytest -rP ```    
+
+Now, maybe you want to connect to your DigitalOcean database and create an index to see if things speed up.    
+You can get the connection string from the DigitalOcean database dashboard which makes it easier to connect to using psql.    
+
+Get the connection string: Dashboard > 'Connect to this database cluser' > Connection String    
+Then run  ``` psql <connectionstring> ```    
+
+For Example
+``` 
+psql postgresql://doadmin:<password>@db-postgresql-sfo3-8001...ondigitalocean.com:25060/defaultdb?sslmode=require
+```    
+``` 
+CREATE INDEX ON benchmark_vectors USING gist(vector);
+```    
+
+
 # Local Native Postgres Install
 The default Postgresql package comes with cube, but limited to 100 dimensions.    
 In order to increase the limit, we need to edit cubedata.h and recompile.    
@@ -81,45 +142,7 @@ CREATE INDEX ON space_nd USING gist ( c );
     LIMIT 5;
     ```
 
-# Running and benchmarking 
-Create a file called settings.py with the following:    
-```
-DATABASE_PARAMS = {
-        'user':'postgres',
-        'host':'127.0.0.1',
-        'port': 5432,
-        'dbname':"postgres",
-        'password':'password',
-}
-```    
-If you want to use digitalOcean, simply replace the values with the connection params for your do db.    
 
-Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.    
-
-Place vectors_noheader.csv in the root dir, and then run:    
-``` python -m split_csv.py ```    
-Which will create the files in test_data    
-
-After that, run     
-```python DbHelper.py```   
-This will populate the database with data from the csv
-We populate the db tables once, so that tests dont have to load the csv into db every time the test suite is run.
-
-If you want to enable atomic database for testing then;
-
-Comment out these lines in conftest.py:    
-
-```
-# load=[load_database]
-
-# postgresql = factories.postgresql(
-#     "postgresql_proc",
-# )
-```
-
-Using pytest we can run the benchmarks   
-The unit test will load some vectors from 10k_rows.csv and use that to test the vector search query    
-``` pytest -rP ```    
 
 # Parallel queries
 We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
