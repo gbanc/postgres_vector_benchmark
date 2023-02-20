@@ -28,17 +28,6 @@ After that, run
 This will populate the database with data from the csv    
 We populate the db tables once, so that tests dont have to load the csv into db every time the test suite is run.
 
-If you want to enable atomic database for testing then;
-
-Comment out these lines in conftest.py:    
-
-```
-# load=[load_database]
-
-# postgresql = factories.postgresql(
-#     "postgresql_proc",
-# )
-```
 
 Using pytest we can run the benchmarks   
 The unit test will load some vectors from 10k_rows.csv and use that to test the vector search query    
@@ -58,6 +47,19 @@ psql postgresql://doadmin:<password>@db-postgresql-sfo3-8001...ondigitalocean.co
 CREATE INDEX ON benchmark_vectors USING gist(vector);
 ```    
 
+## Pytest Database 
+Typically when running tests you want ephemeral database, so everything is done in one transaction and rolled back.    
+For our case we use a static database so we don't have to populate the table every time for repeated benchmarks    
+
+If you want to enable atomic database for testing then uncomment these lines in conftest.py:    
+
+```
+# load=[load_database]
+
+# postgresql = factories.postgresql(
+#     "postgresql_proc",
+# )
+```    
 
 # Local Native Postgres Install
 The default Postgresql package comes with cube, but limited to 100 dimensions.    
