@@ -1,6 +1,3 @@
-import pytest
-import psycopg2
-import psycopg2.extras
 from timeit import default_timer as timer
 import pandas as pd
 import random
@@ -12,9 +9,6 @@ def test_query_performance(postgresql):
 
     # Load the test rows CSV file into a pandas DataFrame
     df = pd.read_csv("test_data/10k_rows.csv", header=None)
-    # Execute a sample query and measure its execution time
-    start_time = timer()
-
 
     # Generate a random sample from the 10k rows
     sample_size = 1
@@ -23,8 +17,10 @@ def test_query_performance(postgresql):
     rows = []
     for r in df_random.itertuples(index=False):
         rows.append(lst2pgarr(r))
-    #cur.execute("SELECT * FROM benchmark_vector WHERE vector = ARRAY%s" % rows)
     
+    # Execute a sample query and measure its execution time
+    start_time = timer()
+    # You can prepend with EXPLAIN ANALYZE for internal postgres execution time
     cur.execute("SELECT id, cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) \
         FROM benchmark_vector \
         WHERE cube_distance(benchmark_vector.vector, cube(ARRAY[%s])) < .3 \

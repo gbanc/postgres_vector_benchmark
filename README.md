@@ -81,7 +81,16 @@ CREATE INDEX ON space_nd USING gist ( c );
     LIMIT 5;
     ```
 
-# Running and benchmarking parallel queries
+# Running and benchmarking 
+Given a csv of vectors, we can use our split_csv script to create two files: one with 10k testing vectors, and another with the remaining vectors.    
+Place vectors_noheader.csv in the root dir, and then run:    
+``` python -m split_csv.py ```    
+Which will create the files in test_data    
+
+Using pytest we can run a simple benchmark. The fixtures will load the db with remaining_rows.csv    
+The unit test will load some vectors from 10k_rows.csv and use that to test the vector search query    
+``` pytest -rP ```
+# Parallel queries
 We can orchestrate parallel requests using python multithreading to perform multiple concurrent queries
      
 # Precision 
