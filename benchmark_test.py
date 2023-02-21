@@ -38,9 +38,14 @@ def test_query_performance(postgresql, search_vectors):
     cur.execute("SELECT id, cube_distance(benchmark_vectors.vector, cube(ARRAY[%s])) \
         FROM benchmark_vectors \
         WHERE cube_distance(benchmark_vectors.vector, cube(ARRAY[%s])) < .3 \
-        ORDER BY benchmark_vectors.vector <-> cube(ARRAY[%s]) \
-        LIMIT 5;" % (rows[0], rows[0], rows[0]))
+        LIMIT 5;" % (rows[0], rows[0]))
     
+        #ORDER BY benchmark_vectors.vector <-> cube(ARRAY[%s]) \
+    print('Search vector:')
+    print('\n')
+    print(rows[0])
+    print('\n')
+
     end_time = timer()
     query_time = end_time - start_time
 

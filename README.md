@@ -46,6 +46,7 @@ psql postgresql://doadmin:<password>@db-postgresql-sfo3-8001...ondigitalocean.co
 ``` 
 CREATE INDEX ON benchmark_vectors USING gist(vector);
 ```    
+Note: Using ORDER BY can result in full scan greatly increasing query time!
 
 ## Pytest Database 
 Typically when running tests you want ephemeral database, so everything is done in one transaction and rolled back.    
@@ -60,6 +61,7 @@ If you want to enable atomic database for testing then uncomment these lines in 
 #     "postgresql_proc",
 # )
 ```    
+
 
 # Local Native Postgres Install
 The default Postgresql package comes with cube, but limited to 100 dimensions.    

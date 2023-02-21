@@ -54,6 +54,7 @@ class DbHelper:
             # select insert from csv_vectors vector column to benchmark_vectors cube column 
             cur.execute("CREATE TABLE IF NOT EXISTS benchmark_vectors (id serial PRIMARY KEY, vector cube)")
             cur.execute("INSERT INTO benchmark_vectors (vector) SELECT cube(vector) FROM csv_vectors")
+            cur.execute("CREATE INDEX on benchmark_vectors using gist(vector) ")
             db_connection.commit()
             cur.close()
 
