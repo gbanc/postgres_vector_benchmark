@@ -7,7 +7,7 @@ from DbHelper import lst2pgarr, lst2pgarrexplicit
 # Load the test rows CSV file into a pandas DataFrame
 df = pd.read_csv("test_data/10k_rows.csv", header=None)
 # number of vectors to search for
-sample_size = 5
+sample_size = 1000
 
 # create multiple sets params for vector search, this will spawn multiple tests
 number_of_tests = 1
@@ -31,7 +31,7 @@ def test_query_performance(postgresql, search_vectors):
     # Execute a sample query and measure its execution time
     start_time = timer()
     query = getQuery(rows)
-    print(query)
+    #print(query)
     cur.execute(query)
 
     print('Search vector:')
@@ -68,6 +68,8 @@ def getQuery(rows):
 
             #ORDER BY benchmark_vectors.vector <-> cube(ARRAY[%s])
 
+    # test a vector with no neighbors, this will be last in the results list 
+    rows.append([999,9999,100000])
     searchRows = [(i,x) for i,x in enumerate(rows)]
     valuesString = ''
     for index, row in searchRows:
